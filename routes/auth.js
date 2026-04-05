@@ -3,18 +3,28 @@ require("dotenv").config();
 const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const user = require("../models/user");
+
 
 const authRoute = express.Router();
+
+authRoute.get("/", (req, res) => {
+  res.redirect("/signup");
+});
+
+authRoute.get("/signup", (req, res) => {
+  res.render("signup", { error: null });
+});
+
+authRoute.get("/login", (req, res) => {
+  res.render("login", { error: null });
+});
+
 
 authRoute.post(
   "/signup",
   passport.authenticate("signup", { session: false }),
   async (req, res, next) => {
-    res.json({
-      message: "Signup successful",
-      user: req.user,
-    });
+     res.redirect("/login");
   },
 );
 
@@ -37,7 +47,8 @@ authRoute.post("/login", async (req, res, next) => {
 
         const token = jwt.sign({ user: body }, process.env.JWT_SECRET);
 
-        return res.json({ token });
+        res.cookie("secret_token", token, { httpOnly: true });
+        return res.redirect("/task");
       });
     } catch (error) {
       return next(error);

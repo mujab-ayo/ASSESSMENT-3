@@ -9,11 +9,17 @@ passport.use(
   new JWTstrategy(
     {
       secretOrKey: process.env.JWT_SECRET,
-      jwtFromRequest: ExtractJWT.fromUrlQueryParameter("secret_token"),
+      jwtFromRequest: (req) => {
+        let token = null;
+        if (req && req.cookies) {
+          token = req.cookies["secret_token"];
+        }
+        return token;
+      },
     },
     async (token, done) => {
       try {
-        return done(null, token.User);
+        return done(null, token.user);
       } catch (error) {
         return done(error);
       }
@@ -57,7 +63,7 @@ passport.use(
               return done(null, false, { message: "User not found" });
           }
 
-          const isUserValid = await User.isValidPassword(password);
+          const isUserValid = await user.isValidPassword(password);
 
           if (!isUserValid) {
               return done(null, false, { message: "Wrong password" });

@@ -1,0 +1,144 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body */
+body {
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container */
+.container {
+    background: #fff;
+    padding: 25px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Wider container for tasks */
+.container.large {
+    width: 500px;
+}
+
+/* Title */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form */
+.form label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #45a049;
+}
+
+/* Secondary button (delete) */
+.btn-danger {
+    background: #e74c3c;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+}
+
+/* Link */
+.link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Error */
+.error {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Task list */
+.task-list {
+    list-style: none;
+    margin-top: 20px;
+}
+
+/* Task item */
+.task-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.task-desc {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.task-status {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #555;
+}
+
+/* Inline forms inside task */
+.inline-form {
+    margin-top: 10px;
+}
+
+.inline-form select {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.inline-form .btn {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 12px;
+}

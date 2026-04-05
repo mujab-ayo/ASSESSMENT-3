@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Tasks</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container large">
+        <h1 class="title">My Tasks</h1>
+
+        <form class="form" action="/task" method="POST">
+            <input class="input" type="text" name="title" placeholder="Task title" required />
+            <input class="input" type="text" name="description" placeholder="Description" required />
+            <button class="btn" type="submit">Add Task</button>
+        </form>
+
+        <% if (tasks.length === 0) { %>
+            <p class="error">You have no tasks yet.</p>
+        <% } else { %>
+            <ul class="task-list">
+                <% tasks.forEach(task => { %>
+                    <li class="task-item">
+                        <span class="task-title"><%= task.title %></span>
+                        <span class="task-desc"><%= task.description %></span>
+                        <span class="task-status">Status: <%= task.status %></span>
+
+                        <form class="inline-form" action="/task/<%= task._id %>?_method=PATCH" method="POST">
+                            <select name="status">
+                                <option value="pending">Pending</option>
+                                <option value="in progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <button class="btn" type="submit">Update</button>
+                        </form>
+
+                        <form class="inline-form" action="/task/<%= task._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } %>
+
+       
+    </div>
+</body>
+</html>
