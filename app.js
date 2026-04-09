@@ -10,10 +10,7 @@ const userSchema = require("./models/user");
 const authRoute = require("./routes/auth");
 const todoRoute = require("./routes/todo");
 
-
-
 const DB = require("./db");
-
 
 const app = express();
 const PORT = 3000;
@@ -22,14 +19,15 @@ app.use(express.static("public"));
 app.set("views", "views");
 app.set("view engine", "ejs");
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
+
+app.use(
+  session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-}));
-
+  }),
+);
 
 app.use(passport.initialize());
 app.use(passport.session());

@@ -32,11 +32,17 @@ authRoute.post("/signup", (req, res) => {
       }
 
       passport.authenticate("local")(req, res, () => {
-        // 👈 handles session automatically
         res.redirect("/task");
       });
     },
   );
+});
+
+authRoute.post("/logout", (req, res) => {
+ req.logout((err) => {
+   if (err) return next(err);
+   res.redirect("/login");
+ });
 });
 
 module.exports = authRoute;
