@@ -31,18 +31,22 @@ authRoute.post("/signup", (req, res) => {
         return res.status(400).send(err.message);
       }
 
-      passport.authenticate("local")(req, res, () => {
-        res.redirect("/task");
+      req.login(user, (err) => {
+        if (err) {
+          console.log("LOGIN AFTER SIGNUP ERROR:", err);
+          return res.status(500).send("Login failed after signup");
+        }
+        return res.redirect("/task");
       });
-    },
+    }
   );
 });
 
 authRoute.post("/logout", (req, res) => {
- req.logout((err) => {
-   if (err) return next(err);
-   res.redirect("/login");
- });
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/login");
+  });
 });
 
 module.exports = authRoute;
