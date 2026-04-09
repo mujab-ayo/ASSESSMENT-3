@@ -18,28 +18,25 @@ authRoute.post(
   },
 );
 
+
+
 authRoute.post("/signup", (req, res) => {
   const user = req.body;
-
   userSchema.register(
     { username: user.username },
     user.password,
     (err, user) => {
       if (err) {
-        res.status(400).send(err.message);
-      } else {
-         req.login(user, (err) => {
-          if (err) {
-            res.status(400).send(err.message);
-             } 
-             res.redirect("/task");
-             
-        });
+        console.log("REGISTER ERROR:", err.message);
+        return res.status(400).send(err.message);
       }
+
+      passport.authenticate("local")(req, res, () => {
+        // 👈 handles session automatically
+        res.redirect("/task");
+      });
     },
   );
 });
-
-
 
 module.exports = authRoute;
