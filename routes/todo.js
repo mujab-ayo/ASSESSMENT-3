@@ -1,34 +1,31 @@
-const express = require("express");
-const Task = require("../models/task");
+const todoRoute = require("express").Router();
+const taskSchema = require("../models/task");
+const user = require("../models/user");
 
-const taskRoute = express.Router();
-
-taskRoute.get("/", async (req, res, next) => {
+todoRoute.get("/", async (req, res, next) => {
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await taskSchema.find({ user: req.user.id });
     res.render("task", { tasks });
   } catch (error) {
     return next(error);
   }
 });
 
-taskRoute.post("/", async (req, res, next) => {
+todoRoute.post("/", async (req, res, next) => {
   try {
     const { title, description } = req.body;
     const user = req.user.id;
 
-    const task = await Task.create({ title, description, user });
+    await taskSchema.create({ title, description, user });
     res.redirect("/task");
-      
   } catch (error) {
     return next(error);
   }
 });
 
-
-taskRoute.patch("/:taskId", async (req, res, next) => {
+todoRoute.post("/:taskId/update", async (req, res, next) => {
   try {
-    const task = await Task.findOneAndUpdate(
+    const task = await taskSchema.findOneAndUpdate(
       { _id: req.params.taskId, user: req.user.id },
       { status: req.body.status },
       { new: true },
@@ -45,11 +42,11 @@ taskRoute.patch("/:taskId", async (req, res, next) => {
   }
 });
 
-taskRoute.delete("/:taskId", async (req, res, next) => {
+todoRoute.post("/:taskId/delete", async (req, res, next) => {
   try {
-    const task = await Task.findOneAndDelete({
+    const task = await taskSchema.findOneAndDelete({
       _id: req.params.taskId,
-      user: req.user.id, 
+      user: req.user.id,
     });
 
     if (!task) {
@@ -63,6 +60,4 @@ taskRoute.delete("/:taskId", async (req, res, next) => {
   }
 });
 
-
-
-module.exports = taskRoute;
+module.exports = todoRoute;

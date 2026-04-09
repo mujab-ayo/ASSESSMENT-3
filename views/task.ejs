@@ -25,7 +25,7 @@
                         <span class="task-desc"><%= task.description %></span>
                         <span class="task-status">Status: <%= task.status %></span>
 
-                        <form class="inline-form" action="/task/<%= task._id %>?_method=PATCH" method="POST">
+                        <form class="inline-form" action="/task/<%= task._id %>/update" method="POST">
                             <select name="status">
                                 <option value="pending">Pending</option>
                                 <option value="in progress">In Progress</option>
@@ -34,7 +34,7 @@
                             <button class="btn" type="submit">Update</button>
                         </form>
 
-                        <form class="inline-form" action="/task/<%= task._id %>?_method=DELETE" method="POST">
+                        <form class="inline-form" action="/task/<%= task._id %>/delete" method="POST">
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>
                     </li>

@@ -1,59 +1,45 @@
-require("dotenv").config();
-
-const express = require("express");
+const authRoute = require("express").Router();
 const passport = require("passport");
-const jwt = require("jsonwebtoken");
+const userSchema = require("../models/user");
 
-
-const authRoute = express.Router();
-
-authRoute.get("/", (req, res) => {
-  res.redirect("/signup");
+authRoute.get("/login", (req, res) => {
+  res.render("login", { error: null });
 });
 
 authRoute.get("/signup", (req, res) => {
   res.render("signup", { error: null });
 });
 
-authRoute.get("/login", (req, res) => {
-  res.render("login", { error: null });
-});
-
-
 authRoute.post(
-  "/signup",
-  passport.authenticate("signup", { session: false }),
-  async (req, res, next) => {
-     res.redirect("/login");
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/task");
   },
 );
 
-authRoute.post("/login", async (req, res, next) => {
-  passport.authenticate("login", async (err, user, info) => {
-    try {
+authRoute.post("/signup", (req, res) => {
+  const user = req.body;
+
+  userSchema.register(
+    { username: user.username },
+    user.password,
+    (err, user) => {
       if (err) {
-        return next(err);
+        res.status(400).send(err.message);
+      } else {
+         req.login(user, (err) => {
+          if (err) {
+            res.status(400).send(err.message);
+             } 
+             res.redirect("/task");
+             
+        });
       }
-
-      if (!user) {
-        const error = new Error("user or password is incorrect");
-        return next(error);
-      }
-
-      req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
-
-        const body = { id: user._id, username: user.username };
-
-        const token = jwt.sign({ user: body }, process.env.JWT_SECRET);
-
-        res.cookie("secret_token", token, { httpOnly: true });
-        return res.redirect("/task");
-      });
-    } catch (error) {
-      return next(error);
-    }
-  })(req, res, next);
+    },
+  );
 });
+
+
 
 module.exports = authRoute;
