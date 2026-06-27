@@ -1,40 +1,26 @@
 require("dotenv").config();
 
+const http = require("http");
 const express = require("express");
-const passport = require("passport");
-const connectEnsureLogin = require("connect-ensure-login");
-const session = require("express-session");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
-const userSchema = require("./models/user");
 const authRoute = require("./routes/auth");
 const todoRoute = require("./routes/todo");
-
+const { requireAuth } = require("./middleware/auth");
+const { createWebSocketServer } = require("./websocket");
+const { startOverdueScheduler } = require("./queues/scheduler");
 const DB = require("./db");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.set("views", "views");
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(userSchema.createStrategy());
-passport.serializeUser(userSchema.serializeUser());
-passport.deserializeUser(userSchema.deserializeUser());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -42,18 +28,23 @@ app.get("/", (req, res) => {
 
 app.use("/", authRoute);
 
-app.use("/task", connectEnsureLogin.ensureLoggedIn(), todoRoute);
+// requireAuth replaces connectEnsureLogin + passport.session
+app.use("/task", requireAuth, todoRoute);
 
 app.use((err, req, res, next) => {
   console.log(err);
-
   res.status(err.status || 500);
-
   res.json({ err: err.message });
 });
 
+// Create HTTP server to share port between Express and WebSocket
+const server = http.createServer(app);
+
+createWebSocketServer(server);
+
 DB().then(() => {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    startOverdueScheduler();
   });
 });

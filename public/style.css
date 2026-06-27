@@ -1,144 +1,160 @@
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+/* ===== Reset & base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Body */
 body {
-    background: #f4f6f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
 }
 
-/* Container */
+/* ===== Container ===== */
 .container {
-    background: #fff;
-    padding: 25px;
-    width: 350px;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  height: fit-content;
 }
 
-/* Wider container for tasks */
-.container.large {
-    width: 500px;
-}
+.container.large { max-width: 780px; }
 
-/* Title */
+/* ===== Headings ===== */
 .title {
-    text-align: center;
-    margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1a1a2e;
 }
 
-/* Form */
-.form label {
-    display: block;
-    margin-top: 10px;
-    font-size: 14px;
+/* ===== Notification banner ===== */
+.notification {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: opacity .3s;
+}
+.notification.hidden { display: none; }
+.notification--overdue  { background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
+.notification--completed { background: #d1e7dd; border: 1px solid #0f5132; color: #0f5132; }
+
+/* ===== Form ===== */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: -6px;
+  color: #444;
 }
 
 .input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color .2s;
+  width: 100%;
 }
+.input:focus { outline: none; border-color: #6366f1; }
 
-/* Button */
+/* ===== Buttons ===== */
 .btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 15px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #6366f1;
+  color: #fff;
+  transition: background .2s, transform .1s;
 }
+.btn:hover { background: #4f46e5; }
+.btn:active { transform: scale(.97); }
 
-.btn:hover {
-    background: #45a049;
-}
+.btn-primary   { background: #6366f1; }
+.btn-secondary { background: #6b7280; }
+.btn-secondary:hover { background: #4b5563; }
+.btn-danger    { background: #ef4444; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success   { background: #22c55e; }
+.btn-success:hover { background: #16a34a; }
 
-/* Secondary button (delete) */
-.btn-danger {
-    background: #e74c3c;
-}
+/* ===== Task list ===== */
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
 
-.btn-danger:hover {
-    background: #c0392b;
-}
-
-/* Link */
-.link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #4CAF50;
-    text-decoration: none;
-}
-
-.link:hover {
-    text-decoration: underline;
-}
-
-/* Error */
-.error {
-    color: red;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-/* Task list */
-.task-list {
-    list-style: none;
-    margin-top: 20px;
-}
-
-/* Task item */
 .task-item {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  transition: border-color .2s;
 }
 
-.task-title {
-    font-weight: bold;
-    font-size: 16px;
-}
+.task-item--overdue   { border-color: #fbbf24; background: #fffbeb; }
+.task-item--completed { border-color: #86efac; background: #f0fdf4; opacity: .85; }
+.task-item--in-progress { border-color: #93c5fd; background: #eff6ff; }
 
-.task-desc {
-    font-size: 14px;
-    margin-top: 5px;
-}
+.task-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 
-.task-status {
-    display: block;
-    margin-top: 5px;
-    font-size: 13px;
-    color: #555;
-}
+.task-title { font-weight: 700; font-size: 1rem; }
+.task-desc  { font-size: 0.88rem; color: #6b7280; }
+.task-meta  { font-size: 0.82rem; color: #9ca3af; }
 
-/* Inline forms inside task */
-.inline-form {
-    margin-top: 10px;
+/* ===== Status badge ===== */
+.task-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-top: 4px;
+  width: fit-content;
 }
+.task-badge--pending      { background: #e5e7eb; color: #374151; }
+.task-badge--in-progress  { background: #dbeafe; color: #1e40af; }
+.task-badge--completed    { background: #dcfce7; color: #15803d; }
+.task-badge--overdue      { background: #fef3c7; color: #92400e; }
 
-.inline-form select {
-    padding: 5px;
-    border-radius: 5px;
-}
+/* ===== Task actions ===== */
+.task-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.inline-form .btn {
-    width: auto;
-    padding: 6px 10px;
-    font-size: 12px;
+.inline-form { display: flex; align-items: center; gap: 6px; }
+
+select {
+  padding: 8px 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  background: #fff;
 }
+select:focus { outline: none; border-color: #6366f1; }
+
+/* ===== Links ===== */
+.link { display: block; text-align: center; margin-top: 16px; color: #6366f1; font-size: 0.9rem; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+.links { display: flex; gap: 12px; margin-top: 20px; }
+
+/* ===== Misc ===== */
+.error { color: #dc2626; font-size: 0.9rem; margin-bottom: 12px; }

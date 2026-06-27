@@ -2,8 +2,10 @@
   "name": "authentication-assessment",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "worker": "node workers/overdueWorker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,15 +13,17 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "body-parser": "^2.2.2",
-    "connect-ensure-login": "^0.1.1",
-    "dotenv": "^17.4.1",
-    "ejs": "^5.0.1",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mongoose": "^9.4.1",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^9.0.1"
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "bullmq": "^5.79.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "ioredis": "^5.11.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3",
+    "nodemailer": "^6.9.7",
+    "ws": "^8.14.2"
   }
 }

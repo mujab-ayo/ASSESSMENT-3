@@ -1,6 +1,24 @@
 const authRoute = require("express").Router();
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const userSchema = require("../models/user");
+
+/**
+ * Sign a JWT and set it as a cookie.
+ * This IS the auth token — no session involved.
+ */
+function issueJWT(res, user) {
+  const token = jwt.sign(
+    { userId: String(user._id), username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+  // httpOnly: false so browser JS can read it for WebSocket auth
+  res.cookie("token", token, {
+    httpOnly: false,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+}
 
 authRoute.get("/login", (req, res) => {
   res.render("login", { error: null });
@@ -10,43 +28,54 @@ authRoute.get("/signup", (req, res) => {
   res.render("signup", { error: null });
 });
 
-authRoute.post(
-  "/login",
-  passport.authenticate("local", { failureRedirect: "/login" }),
-  (req, res) => {
-    res.redirect("/task");
-  },
-);
+authRoute.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-
-
-authRoute.post("/signup", (req, res) => {
-  const user = req.body;
-  userSchema.register(
-    { username: user.username },
-    user.password,
-    (err, user) => {
-      if (err) {
-        console.log("REGISTER ERROR:", err.message);
-        return res.status(400).send(err.message);
-      }
-
-      req.login(user, (err) => {
-        if (err) {
-          console.log("LOGIN AFTER SIGNUP ERROR:", err);
-          return res.status(500).send("Login failed after signup");
-        }
-        return res.redirect("/task");
-      });
+    const user = await userSchema.findOne({ username });
+    if (!user) {
+      return res.render("login", { error: "Invalid username or password" });
     }
-  );
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.render("login", { error: "Invalid username or password" });
+    }
+
+    issueJWT(res, user);
+    res.redirect("/task");
+  } catch (err) {
+    console.error("LOGIN ERROR:", err.message);
+    res.render("login", { error: "Something went wrong. Please try again." });
+  }
+});
+
+authRoute.post("/signup", async (req, res) => {
+  try {
+    const { username, password, email } = req.body;
+
+    const existing = await userSchema.findOne({ username });
+    if (existing) {
+      return res.render("signup", { error: "Username already taken" });
+    }
+
+    const user = await userSchema.create({
+      username,
+      password,
+      email: email || "",
+    });
+
+    issueJWT(res, user);
+    res.redirect("/task");
+  } catch (err) {
+    console.error("REGISTER ERROR:", err.message);
+    res.render("signup", { error: "Something went wrong. Please try again." });
+  }
 });
 
 authRoute.post("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) return next(err);
-    res.redirect("/login");
-  });
+  res.clearCookie("token");
+  res.redirect("/login");
 });
 
 module.exports = authRoute;
